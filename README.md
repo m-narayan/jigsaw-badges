@@ -82,3 +82,7 @@ It may take a little while to run depending on how many badges you've got
 set up already.
 
 [![Build Status](https://travis-ci.org/whitmer/canvabadges.png)](https://travis-ci.org/whitmer/canvabadges)
+=======
+jigsaw-badges
+=============
+
