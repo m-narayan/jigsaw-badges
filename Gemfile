@@ -23,4 +23,5 @@ group :development do
     gem 'selenium-webdriver'
     gem 'capybara'
 end
+gem 'shotgun'
 

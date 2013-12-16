@@ -116,15 +116,7 @@
         <% org = @badge_placement_config.organization %>
         <% settings = (org && org.settings) || BadgeHelper.issuer %>
         <p class="verification">
-          <img src='<%= settings['image'] %>'/>
-          This badge is issued by 
-          <a href="<%= settings['url'] %>">
-          <%= settings['name'] %></a>.
-          It is hosted at 
-          <%= (org && org.host) || request.host %>.
-          If this association
-          is incorrect, please <a href="<%= BadgeHelper.issuer['owner_url'] %>">contact the
-          administrator of this site</a>.
+
           <span style="clear: left;"></span>
         </p>
       </div>

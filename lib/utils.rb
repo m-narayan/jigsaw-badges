@@ -1,9 +1,11 @@
 require 'canvas-api'
 
 module CanvasAPI
-  def self.api_call(path, user_config, all_pages=false)
-    protocol = 'https'
-    host = "#{protocol}://#{user_config.host}"
+
+    def self.api_call(path, user_config, all_pages=false)
+    #protocol = 'https'
+    protocol = 'http'
+    host = "#{BadgeHelper.protocol}://#{user_config.host}"
     canvas = Canvas::API.new(:host => host, :token => user_config.access_token)
     begin
       result = canvas.get(path)

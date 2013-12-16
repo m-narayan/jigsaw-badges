@@ -325,10 +325,10 @@ class BadgePlacementConfig
       # if not, check on award status
     end
   end
-  
+
   def check_for_public_state
     return false unless self.domain
-    host = "https://" + self.domain.host
+    host = "#{BadgeHelper.protocol}://" + self.domain.host
     api = Canvas::API.new(:host => host, :token => "")
     begin
       json = api.get("/api/v1/courses/#{self.course_id}")
