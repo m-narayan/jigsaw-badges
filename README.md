@@ -33,7 +33,7 @@ require './canvabadges.rb'
 #  store your Canvas token settings
 ExternalConfig.create(:config_type => 'canvas_oauth', :value => "<canvas developer key id>", :shared_secret => "<canvas developer secret>")
 #  store your twitter token settings
-ExternalConfig.create(:config_type => 'twitter_for_login', :value => "<twitter consmyer key>", :shared_secret => "<twitter shared secret>")
+#ExternalConfig.create(:config_type => 'twitter_for_login', :value => "<twitter consmyer key>", :shared_secret => "<twitter shared secret>")
 #  create a record matching your domain
 #  set twitter_login to false if you only want LTI credentials created by hand
 #  (twitter_login lets anyone generate an LTI key and secret with a twitter login)
@@ -46,11 +46,8 @@ o = Organization.create(:host => "badgemagic.yourdomain.com", :settings => {
   'image' => 'http://badgemagic.com/images/90x90.png',
   'email' => 'admin_or_support@badgemagic.com'
 })
-exit
 
 # to create an LTI configuration by hand, do the following
-irb
-require './canvabadges.rb'
 #  create a new LTI configuration
 conf = ExternalConfig.generate("My Magic LTI Config")
 #  print out the results

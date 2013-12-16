@@ -21,6 +21,7 @@
     <file path="/models.rb" changelist="f4973d00-d58a-4e61-9eae-6c7e2a6ed208" time="1387194032193" ignored="false" />
     <file path="/layout.erb" changelist="f4973d00-d58a-4e61-9eae-6c7e2a6ed208" time="1387195056467" ignored="false" />
     <file path="/badge_chooser.erb" changelist="f4973d00-d58a-4e61-9eae-6c7e2a6ed208" time="1387195964331" ignored="false" />
+    <file path="/README.md" changelist="f4973d00-d58a-4e61-9eae-6c7e2a6ed208" time="1387196495170" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +71,7 @@
       <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="40" column="0" selection-start="1871" selection-end="1871" vertical-scroll-proportion="0.16385135">
               <folding />
             </state>
           </provider>
@@ -489,7 +490,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="40" column="0" selection-start="1871" selection-end="1871" vertical-scroll-proportion="0.16385135">
           <folding />
         </state>
       </provider>
