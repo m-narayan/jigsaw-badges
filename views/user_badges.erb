@@ -28,4 +28,21 @@
 <% if @for_current_user && !@badges.empty? %>
   <% url = "#{protocol}://#{request.host_with_port}/badges/all/#{params['domain_id']}/#{params['user_id']}" %>
   <br/><form class='form-inline'><label>Share this Page: <input type='text' value='<%= url %>'/></label></form>
+
+    <a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=<%= url %>&p[title]=<%="My Badge"%>&p[summary]=<%="My Badge"%>"onclick="javascript:window.open(this.href,
+            '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=550,width=500');return false;" >
+    <button class="btn" type="button" style="width:180px;"><img src="/fb.jpg" style="width:20px;float:left" > Share on Facebook</button></a><br><br>
+
+    <a href="http://www.linkedin.com/shareArticle?mini=true&url=<%= url %> &title= <%= "My Badge" %> &summary= <%= "My Badge" %> "onclick="javascript:window.open(this.href,
+            '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=550,width=500');return false;">
+    <button class="btn" type="button" style="width:180px;"><img src="/li.jpg"style="width:20px;float:left" > Share on Linkedin</button></a><br><br>
+
+    <a href="http://twitter.com/intent/tweet?&url=<%= url %> &text= <%=  url %> " onclick="javascript:window.open(this.href,
+            '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=550,width=500');return false;">
+    <button class="btn" type="button" style="width:180px;"><img src="/tw.jpg" style="width:20px;float:left">Tweet on Twitter</button></a><br><br>
+
+    <a href="http://plus.google.com/share?url= <%= url %>" onclick="javascript:window.open(this.href,
+            '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=550,width=500');return false;">
+    <button class="btn" type="button" style="width:180px;"><img src="/gogl.jpg" style="width:20px;float:left">Share on Google+</button></a>
+
 <% end %>
