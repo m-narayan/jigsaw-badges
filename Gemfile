@@ -2,6 +2,7 @@ ruby '1.9.3'
 source "http://rubygems.org"
 
 gem "sinatra"
+gem "sinatra-contrib"
 gem "oauth",   "0.4.5"
 gem "json"
 gem "ims-lti"

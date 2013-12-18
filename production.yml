@@ -1,0 +1,2 @@
+production:
+  database_url: postgres://portal:portal@localhost/badges
