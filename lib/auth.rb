@@ -133,7 +133,7 @@ module Sinatra
           :redirect_uri => CGI.escape(return_url)
         })
         response = http.request(request)
-        json = JSON.parse(response.body)
+        json = ::JSON.parse(response.body)
         
         if json && json['access_token']
           user_config = UserConfig.first(:user_id => session['user_id'], :domain_id => domain.id)
