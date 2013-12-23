@@ -40,6 +40,8 @@ class Canvabadges < Sinatra::Base
   raise "session key required" if settings.environment == 'production' && !settings.environment
   set :session_secret, settings.session_key || "local_secret"
 
+
+
   #DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{Dir.pwd}/#{env}.sqlite3"))
   DataMapper.setup(:default, (settings.database_url || "sqlite3:///#{Dir.pwd}/#{env}.sqlite3"))
   DataMapper.auto_upgrade!

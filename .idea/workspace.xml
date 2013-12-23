@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f4973d00-d58a-4e61-9eae-6c7e2a6ed208" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/canvabadges.rb" afterPath="$PROJECT_DIR$/canvabadges.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.yml" afterPath="$PROJECT_DIR$/config.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/production.yml" afterPath="$PROJECT_DIR$/production.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="f4973d00-d58a-4e61-9eae-6c7e2a6ed208" name="Default" comment="" />
     <ignored path="canvabadges.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="f4973d00-d58a-4e61-9eae-6c7e2a6ed208" time="1387771442961" ignored="false" />
