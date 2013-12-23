@@ -1,2 +1,3 @@
 production:
   database_url: postgres://portal:portal@localhost/badges
+  session_key: jbsdfbsjafdsljhiei190483uj848hbwequr584hgfduhf47hgi4th4

@@ -1,2 +1,3 @@
 development:
   database_url: sqlite3:////home/sysadmin/dev/jigsaw-badges/development.sqlite3
+  session_key: jbsdfbsjafdsljhiei190483uj848hbwequr584hgfduhf47hgi4th4
