@@ -1,4 +1,6 @@
 *.sqlite3
 .bundle
-log/access.log
-log/error.log
+log/*.log
+/.idea/*
+/.idea/workspace.xml
+/.rvmrc

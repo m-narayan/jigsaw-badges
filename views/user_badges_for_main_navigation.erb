@@ -1,0 +1,22 @@
+<style>
+  body{
+      background-color: #f4f4f4;
+      padding-top: 0;
+      overflow-y: auto;
+
+
+  }
+  .container {
+      max-width: 940px;
+      overflow-x: auto;
+      overflow-y: hidden;
+  }
+</style>
+<% @badges.each do |badge| %>
+    <li style="display: block; float: left;position: relative;">
+    <% badge_url = @for_current_user ? "/badges/check/#{badge.badge_placement_config_id}/#{badge.user_id}" : "/badges/criteria/#{badge.badge_config_id}/#{badge.config_nonce}?user=#{badge.nonce}" %>
+    <img src='<%= badge.badge_url %>'   style="width: 30px"/>
+   </li>
+  <% end %>
+
+

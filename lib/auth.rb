@@ -34,7 +34,7 @@ module Sinatra
           halt 400, error("This app appears to have been misconfigured, please contact your instructor or administrator. Email address is required on user launches.")
         end
         if provider.valid_request?(request)
-          badgeless_placement = params['custom_show_all'] || params['custom_show_course'] || params['ext_content_intended_use'] == 'navigation' || params['picker']
+          badgeless_placement = params['custom_show_all'] || params['custom_show_course'] || params['ext_content_intended_use'] == 'navigation' || params['picker'] || params['main_navigation_show_all']
           unless badgeless_placement
             if !params['custom_canvas_course_id']
               halt 400, error("This app appears to have been misconfigured, please contact your instructor or administrator. Course must be a Canvas course, and launched with public permission settings.")
@@ -220,6 +220,8 @@ module Sinatra
         params ||= {}
         if params['custom_show_all']
           redirect to("/badges/all/#{domain_id}/#{user_id}")
+        elsif params['main_navigation_show_all']
+          redirect to("/badges_for_main_navigation/all/#{domain_id}/#{user_id}")
         elsif params['custom_show_course']
           redirect to("/badges/course/#{params['custom_canvas_course_id']}")
         elsif params['ext_content_intended_use'] == 'navigation' || params['picker']

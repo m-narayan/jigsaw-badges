@@ -86,7 +86,17 @@ module Sinatra
         @user = UserConfig.first(:user_id => params['user_id'], :domain_id => params['domain_id'])
         erb :user_badges
       end
-      
+
+      app.get "/badges_for_main_navigation/all/:domain_id/:user_id" do
+        org_check
+        @for_current_user = session['user_id'] == params['user_id'] && session['domain_id'] == params['domain_id']
+        @badges = Badge.all(:user_id => params['user_id'], :domain_id => params['domain_id'], :state => 'awarded')
+        @badges = @badges.select{|b| b.public } unless @for_current_user
+        @domain = Domain.first(:id => params['domain_id'])
+        @user = UserConfig.first(:user_id => params['user_id'], :domain_id => params['domain_id'])
+        erb :user_badges_for_main_navigation
+      end
+
       app.get "/badges/course/:course_id" do  
         get_org
         permission_check(params['course_id'], 'view')
