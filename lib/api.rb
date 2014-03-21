@@ -102,9 +102,36 @@ module Sinatra
           "Badge image not found"
         end
       end
+
+      app.post "/api/v1/courses/:course_id/badges.json" do
+        content_type :json
+        @badges_hash ={}
+        host = params['custom_canvas_api_domain']
+        if host && params['launch_presentation_return_url'].match(Regexp.new(host.sub(/\.instructure\.com/, ".(test|beta).instructure.com")))
+          host = params['launch_presentation_return_url'].split(/\//)[2]
+        end
+        host ||= params['tool_consumer_instance_guid'].split(/\./)[1..-1].join(".") if params['tool_consumer_instance_guid'] && params['tool_consumer_instance_guid'].match(/\./)
+        domain = Domain.first(:host => host)
+        if domain
+        params['user_ids'].split(',').each do |user_id|
+            badges = Badge.all(:state => 'awarded', :user_id => user_id.to_i, :course_id => params['course_id'], :domain_id =>  domain.id)
+            badges.each do |badge|
+              @badges_hash.merge!(api_json(badge))
+            end
+          end
+        @badges_hash.to_json
+        else
+          halt(400, {:error => "Domain not properly configured."})
+        end
+    end
     end
     
     module Helpers
+
+      def api_json(obj)
+        obj.as_json
+      end
+
       def get_org
         @org = Organization.first(:host => request.env['HTTP_HOST'], :order => :id)
         halt(400, {:error => "Domain not properly configured. No Organization record matching the host #{request.env['HTTP_HOST']}"}.to_json) unless @org

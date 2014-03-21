@@ -492,6 +492,10 @@ class Badge
   belongs_to :badge_placement_config
   before :save, :generate_defaults
   after :save, :check_for_notify_on_award
+
+  def as_json
+    { self.id => {:user_id => self.user_id,:badge_url => self.badge_url} }
+  end
   
   def open_badge_json(host_with_port)
     image = self.badge_url
@@ -519,7 +523,7 @@ class Badge
       :evidence => (self.evidence_url || "#{BadgeHelper.protocol}://#{host_with_port}/badges/criteria/#{self.badge_config_id}/#{self.config_nonce}?user=#{self.nonce}")
     }
   end
-  
+
   def generate_defaults
     self.salt ||= Time.now.to_i.to_s
     self.nonce ||= Digest::MD5.hexdigest(self.salt + rand.to_s)
