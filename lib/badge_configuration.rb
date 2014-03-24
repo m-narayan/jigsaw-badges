@@ -162,6 +162,14 @@ module Sinatra
         @domain_id = @badge_placement_config.domain_id || domain_id
         @user_id = session['user_id']
         @badge_placement_config
+        @earned_for_different_course = @badge && @badge.badge_placement_config_id != @badge_placement_config.id
+        if @earned_for_different_course
+            user_badge_placement = UserBadgePlacement.first(badge_placement_config_id: @badge_placement_config.id,user_id:@badge.user_id,badge_id:@badge.id)
+            if user_badge_placement.nil?
+              user_badge_placement = UserBadgePlacement.new(badge_placement_config_id: @badge_placement_config.id,user_id:@badge.user_id,badge_id:@badge.id)
+              user_badge_placement.save
+            end
+        end
       end
     end
   end

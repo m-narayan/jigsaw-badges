@@ -487,14 +487,17 @@ class Badge
   property :issuer_org, String
   property :issuer_url, String
   property :issuer_email, String
-  
+
   belongs_to :badge_config
   belongs_to :badge_placement_config
   before :save, :generate_defaults
   after :save, :check_for_notify_on_award
+  after :save, :create_badge_placement_config
 
   def as_json
-    { self.id => {:user_id => self.user_id,:badge_url => self.badge_url} }
+    badges = UserBadgePlacement.all(user_id: self.user_id.to_i,badge_id: self.id)
+    { self.id => {:user_id => self.user_id,:badge_url => self.badge_url,:badge_count => badges.size,
+                                                                :badge_description => self.description} }
   end
   
   def open_badge_json(host_with_port)
@@ -575,6 +578,13 @@ class Badge
     self.state = 'awarded'
     save
   end
+
+  def create_badge_placement_config
+    user_badge_placement = UserBadgePlacement.new(badge_placement_config_id: self.badge_placement_config_id,
+                                                  user_id: self.user_id,badge_id:self.id)
+    user_badge_placement.save
+  end
+
   
   def self.generate_badge(params, badge_placement_config, name, email)
     settings = badge_placement_config.merged_settings || {}
@@ -621,5 +631,20 @@ class Badge
     badge_placement_config.update_counts
     badge
   end
+end
+
+class UserBadgePlacement
+  include DataMapper::Resource
+
+  property :id, Serial
+  property :badge_id, Integer
+  property :badge_placement_config_id, Integer
+  property :user_id, Integer
+
+  property :created_at, DateTime
+  property :updated_at, DateTime
+
+  belongs_to :badge
+  belongs_to :badge_placement_config
 end
 

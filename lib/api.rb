@@ -113,12 +113,14 @@ module Sinatra
         host ||= params['tool_consumer_instance_guid'].split(/\./)[1..-1].join(".") if params['tool_consumer_instance_guid'] && params['tool_consumer_instance_guid'].match(/\./)
         domain = Domain.first(:host => host)
         if domain
-        params['user_ids'].split(',').each do |user_id|
-            badges = Badge.all(:state => 'awarded', :user_id => user_id.to_i, :course_id => params['course_id'], :domain_id =>  domain.id)
-            badges.each do |badge|
-              @badges_hash.merge!(api_json(badge))
-            end
+        unless params['user_ids'].nil?
+          params['user_ids'].split(',').each do |user_id|
+              badges = Badge.all(:state => 'awarded', :user_id => user_id.to_i, :course_id => params['course_id'], :domain_id =>  domain.id)
+              badges.each do |badge|
+                @badges_hash.merge!(api_json(badge))
+              end
           end
+        end
         @badges_hash.to_json
         else
           halt(400, {:error => "Domain not properly configured."})
