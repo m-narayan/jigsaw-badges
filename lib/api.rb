@@ -125,7 +125,27 @@ module Sinatra
         else
           halt(400, {:error => "Domain not properly configured."})
         end
-    end
+      end
+
+      app.post "/api/v1/:user_id/badges.json" do
+        content_type :json
+        @badges_hash ={}
+        host = params['custom_canvas_api_domain']
+        if host && params['launch_presentation_return_url'].match(Regexp.new(host.sub(/\.instructure\.com/, ".(test|beta).instructure.com")))
+          host = params['launch_presentation_return_url'].split(/\//)[2]
+        end
+        host ||= params['tool_consumer_instance_guid'].split(/\./)[1..-1].join(".") if params['tool_consumer_instance_guid'] && params['tool_consumer_instance_guid'].match(/\./)
+        domain = Domain.first(:host => host)
+        if domain
+          badges = Badge.all(:state => 'awarded', :user_id => params['user_id'].to_i, :domain_id =>  domain.id)
+          badges.each do |badge|
+            @badges_hash.merge!(api_json(badge))
+          end
+          @badges_hash.to_json
+        else
+          halt(400, {:error => "Domain not properly configured."})
+        end
+      end
     end
     
     module Helpers
