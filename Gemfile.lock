@@ -112,24 +112,25 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  canvas-api
-  capybara
-  dm-aggregates
-  dm-core
-  dm-migrations
-  dm-postgres-adapter
-  dm-sqlite-adapter
+  canvas-api (= 0.7)
+  capybara (= 2.2.1)
+  dm-aggregates (= 1.2.0)
+  dm-core (= 1.2.1)
+  dm-migrations (= 1.2.0)
+  dm-postgres-adapter (= 1.2.0)
+  dm-sqlite-adapter (= 1.2.0)
   dm-types (= 1.2.0)
-  erubis
-  ims-lti
-  json
-  nokogiri
+  erubis (= 2.7.0)
+  ims-lti (= 1.1.4)
+  json (= 1.5.5)
+  multi_json (= 1.0.4)
+  nokogiri (= 1.6.1)
   oauth (= 0.4.5)
-  rack-iframe
-  rack-ssl-enforcer
-  rack-test
-  rspec
-  selenium-webdriver
-  shotgun
-  sinatra
-  sinatra-contrib
+  rack-iframe (= 0.0.3)
+  rack-ssl-enforcer (= 0.2.6)
+  rack-test (= 0.6.2)
+  rspec (= 2.14.1)
+  selenium-webdriver (= 2.39.0)
+  shotgun (= 0.9)
+  sinatra (= 1.4.4)
+  sinatra-contrib (= 1.4.2)
