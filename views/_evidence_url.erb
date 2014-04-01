@@ -1,4 +1,4 @@
-<% if !@badge.awarded? || !@badge_placement_config.evidence_required? %>
+<% if @badge && (!@badge.awarded? || !@badge_placement_config.evidence_required? )%>
   <form class='well form-horizontal' style="margin-top: 15px;" rel="/badges/<%= @badge.id %>?badge_id=<%= @badge.nonce %>">
     <label>
       Evidence URL: 

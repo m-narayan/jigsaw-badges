@@ -7,11 +7,62 @@
         <% checked = (settings['modules'] || []).map(&:first).include?(mod['id']) %>
         <div class='module'>
           <label style='display: inline-block'>
-            <input type="checkbox" <%= 'checked' if checked %> name="module_<%= mod['id'] %>" value="<%= CGI.escape(mod['name']) %>"/>
-            <%= mod['name'] %>
+            <input type="checkbox" <%= 'checked' if checked %> name="module_<%= mod['id'] %>" value="<%= CGI.escape(mod['name']) %>"
+                                                                                           style="margin-bottom: 1px;"/>
+                <%= mod['name'] %>
           </label>
           <input name="credits_for_<%= mod['id'] %>" class="credits span1" title="Credits for <%= mod['name'] %>" placeholder="credits"/>
+          <div class="item_select" style="float:right;margin-right: 267px;">
+            <%
+               module_item_ids =[]
+               (settings['module_items'] || []).each do |module_item|
+                 module_item.each do |key, value|
+                    module_item_ids << key.to_i
+                    @module_item_value = value
+                 end
+               end
+            %>
+            <select class="item_select_option" name="item_for_<%= mod['id'] %>" >
+              <option value="0">Select one</option>
+              <optgroup label="Quizzes">
+              <% mod['items'].each do  |item|   %>
+                    <% if item['type'] == 'Quiz'  %>
+                    <option value="<%= item['id']%>" <%=
+                      if  (module_item_ids || []).include?(item['id'])
+                        "selected"
+                      end
+
+                    %> > <%= item['title'] %> </option>
+                    <% end  %>
+              <% end  %>
+              </optgroup>
+              <optgroup label="Assignments">
+              <% mod['items'].each do  |item|   %>
+
+                    <% if item['type'] == 'Assignment'  %>
+                        <option value="<%= item['id']%>"
+                        <%=
+                                   if  (module_item_ids || []).include?(item['id'])
+                                            "selected"
+                                   end
+                        %> > <%= item['title'] %></option>
+                    <% end  %>
+
+              <% end  %>
+              </optgroup>
+            </select>
+            </div>
+          <div  style="float:right;margin-top: -28px;margin-right: 76px;">
+            <select name="item_select_option_for_<%= mod['id'] %>" id="item_select_option_selector" style="display:none;width: 176px;">
+              <option value="must_submit">Must Submit</option>
+              <option value="must_score">Must Score</option>
+            </select>
+            <input class="score_text" name="score_for_<%= mod['id'] %>"  placeholder="Score" style="display:none;
+                    width: 50px;margin-right: -52px;" value="<%= @module_item_value %>" />
+          </div>
+
         </div>
+          <hr/>
       <% end %>
     </div>
   </div>

@@ -195,13 +195,13 @@ module Sinatra
           end
           badges = badges[((params['page'].to_i - 1) * 50), 50]
           badges.each do |badge|
-            result << badge_hash(badge.user_id, badge.user_name, badge, @badge_placement_config && @badge_placement_config.nonce)
+            result << badge_hash(badge.user_id, badge.user_name, badge,@badge_placement_config.id, @badge_placement_config && @badge_placement_config.nonce)
           end
         else
           json = api_call("/api/v1/courses/#{@course_id}/users?enrollment_type=student&per_page=50&page=#{params['page'].to_i}", @user_config)
           json.each do |student|
             badge = badges.detect{|b| b.user_id.to_i == student['id'] }
-            result << badge_hash(student['id'], student['name'], badge, @badge_placement_config && @badge_placement_config.nonce)
+            result << badge_hash(student['id'], student['name'], badge,@badge_placement_config.id, @badge_placement_config && @badge_placement_config.nonce)
           end
           if json.more?
             next_url = "/api/v1/badges/current/#{@badge_placement_config_id}.json?page=#{params['page'].to_i + 1}"
@@ -212,7 +212,7 @@ module Sinatra
           :objects => result
         }
       end
-      def badge_hash(user_id, user_name, badge, nonce=nil)
+      def badge_hash(user_id, user_name, badge,placement_id=nil,  nonce=nil)
         if badge
           abs_url = badge.badge_url || "/badges/default.png"
           abs_url = "#{protocol}://#{request.host_with_port}" + abs_url unless abs_url.match(/\:\/\//) || abs_url.match(/^data/)
@@ -222,9 +222,9 @@ module Sinatra
             :manual => badge.manual_approval,
             :public => badge.public,
             :image_url => abs_url,
-            :issued => badge && badge.issued && badge.issued.strftime('%b %e, %Y'),
+            :issued =>  set_badge_status_for_user(user_id,badge,placement_id,false),
             :nonce => badge && badge.nonce,
-            :state => badge.state,
+            :state => set_badge_status_for_user(user_id,badge,placement_id,true),
             :evidence_url => badge.evidence_url,
             :config_id => badge.badge_config_id,
             :placement_config_id => badge.badge_placement_config_id,
@@ -245,6 +245,28 @@ module Sinatra
             :placement_config_id => nil,
             :config_nonce => nonce
           }
+        end
+      end
+
+      def set_badge_status_for_user(user_id,badge,placement_id,get_status=nil)
+        user_badge_placement = UserBadgePlacement.first(badge_placement_config_id: placement_id,
+                                                        user_id:user_id,badge_id:badge.id)
+        if user_badge_placement.nil?
+          if get_status
+          'unissued'
+          else
+            badge && badge.issued && badge.issued.strftime('%b %e, %Y')
+          end
+        else
+          if get_status
+          'awarded'
+          else
+            if user_badge_placement.created_at
+              user_badge_placement.created_at.strftime('%b %e, %Y')
+            else
+              badge && badge.issued && badge.issued.strftime('%b %e, %Y')
+            end
+          end
         end
       end
 

@@ -148,6 +148,25 @@ if(modules) {
       $("#modules_settings").html(data);
       $("#badge_settings .form-actions button[type='submit']").attr('disabled', false);
       $("#credit_based").change();
+       /*select module item with score based on the score*/
+        module_item_value =  $('.score_text').val();
+        console.log(module_item_value);
+        if ($('.item_select_option').val() != 0){
+            $('#item_select_option_selector').show();
+        }
+        else
+        {
+            $('#item_select_option_selector').hide();
+            $(".score_text").hide();
+        }
+
+        if (module_item_value != "")
+        {
+            $('#item_select_option_selector').val('must_score');
+            $(".score_text").show();
+        }
+        /*select module item with score based on the score*/
+
     },
     error: function(data) {
       $("#modules_settings .controls").html("Error retrieving course modules. Please reload.");
@@ -214,3 +233,28 @@ $(document).on('click', '.select_badge_config', function(event) {
 $(document).on('click', '#session_fixer', function(event) {
   window.open("/session_fix", "Session Fixer", "width=400,height=300,resizable=no,menubar=no,location=no,toolbar=no");
 });
+
+$(document).on('change', '.item_select_option', function(event) {
+    if ($('.item_select_option').val() != 0){
+        $('#item_select_option_selector').show();
+    }else
+    {
+        $('#item_select_option_selector').hide();
+        $(".score_text").hide();
+    }
+
+});
+
+$(document).on('change', '#item_select_option_selector', function(event) {
+    console.log($('#item_select_option_selector').val());
+    if ($('#item_select_option_selector').val() == 'must_score'){
+        $(".score_text").show();
+    }else
+    {
+        $(".score_text").hide();
+    }
+});
+
+
+
+

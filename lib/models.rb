@@ -122,7 +122,7 @@ class UserConfig
     end
   end
   
-  def check_badge_status(badge_placement_config, params, name, email)
+  def check_badge_status(badge_placement_config, params, name, email,context_module_id)
     scores_json = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id}?include[]=total_scores", self)
     modules_json = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id}/modules", self, true) if badge_placement_config.modules_required?
     modules_json ||= []
@@ -130,18 +130,75 @@ class UserConfig
     unless scores_json
       return "<h3>Error getting data from Canvas</h3>"
     end
-  
+
     student = scores_json['enrollments'].detect{|e|  e['role'].downcase == 'studentenrollment' }
     student['computed_final_score'] ||= 0 if student
+
+    @module_items = badge_placement_config.settings['module_items'] unless badge_placement_config.settings['module_items'].nil?
   
     if student
-      if badge_placement_config.requirements_met?(student['computed_final_score'], completed_module_ids)
+
+      if (@module_items || []).empty?
+         #no module_item is add
+         @module_item_completed = true
+      end
+
+      (@module_items || []).each do |module_item|
+        module_item.each do |module_item_id, score|
+          @module_item_id = module_item_id.to_i
+          @module_item_score = score
+          unless @module_item_id.nil?
+            #get module_item
+            @module_item_json = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id.to_i}/modules/#{context_module_id}/items/#{@module_item_id}", self)
+            #for getting the assignment id
+            if @module_item_json['type'] == 'Quiz'
+                course_assignments = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id.to_i}/assignments", self)
+                course_assignments.each do |assignment|
+                  quiz_id = assignment['quiz_id']
+                  unless quiz_id.nil?
+                    if quiz_id == @module_item_json['content_id']
+                      @assignment = assignment
+                    end
+                  end
+                end
+                unless @assignment.nil?
+                  submission = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id.to_i}/assignments/#{@assignment['id']}/submissions/#{params['user_id']}", self)
+                  @student_score = (submission['score'])
+                  unless @student_score.nil?
+                    if @student_score.to_i >= @module_item_score.to_i
+                      @module_item_completed = true
+                    end
+                  end
+                end
+            elsif @module_item_json['type'] == 'Assignment'
+              submission = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id.to_i}/assignments/#{@module_item_json['content_id']}/submissions/#{params['user_id']}", self)
+              @student_score = (submission['score'])
+              unless @student_score.nil?
+                if @student_score.to_i  >= @module_item_score.to_i
+                  @module_item_completed = true
+                end
+              end
+            end
+          end
+        end
+      end
+
+
+      if badge_placement_config.requirements_met?(student['computed_final_score'], completed_module_ids) && @module_item_completed
+        @earned_for_different_course = @badge && @badge.badge_placement_config_id != @badge_placement_config.id
+        if @earned_for_different_course && !email
+          user_badge_placement = UserBadgePlacement.first(badge_placement_config_id: @badge_placement_config.id,user_id:@badge.user_id,badge_id:@badge.id)
+          if user_badge_placement.nil?
+            user_badge_placement = UserBadgePlacement.new(badge_placement_config_id: @badge_placement_config.id,user_id:@badge.user_id,badge_id:@badge.id)
+            user_badge_placement.save
+          end
+        end
         params['credits_earned'] = badge_placement_config.credits_earned(student['computed_final_score'], completed_module_ids)
         if !email
           raise "You need to set an email address in Canvas before you can earn any badges."
         end
         badge = Badge.complete(params, badge_placement_config, name, email)
-      elsif !badge
+      elsif !badge &&  @module_item_completed
         badge = Badge.generate_badge({'user_id' => self.user_id}, badge_placement_config, name, email)
         badge.save
       end
@@ -152,7 +209,10 @@ class UserConfig
       :badge_placement_config => badge_placement_config,
       :user_config => self,
       :badge => badge,
-      :student => student
+      :student => student,
+      :module_item_json => @module_item_json,
+      :student_score => @student_score,
+      :module_item_score => @module_item_score.to_i
     }
   end
 end
@@ -306,6 +366,7 @@ class BadgePlacementConfig
       placement_settings['credits_for_final_score'] = badge_settings['credits_for_final_score'].to_f.round(1)
       placement_settings['modules'] = badge_settings['modules']
       placement_settings['total_credits'] = badge_settings['total_credits']
+      placement_settings['module_items'] = badge_settings['module_items']
     
       self.settings = placement_settings
     end
@@ -646,5 +707,11 @@ class UserBadgePlacement
 
   belongs_to :badge
   belongs_to :badge_placement_config
+  before :save, :generate_defaults
+
+  def generate_defaults
+    self.created_at ||= DateTime.now
+  end
+
 end
 

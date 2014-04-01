@@ -160,7 +160,8 @@ module Sinatra
       app.get "/badges/modules/:badge_placement_config_id/:user_id" do
         org_check
         load_badge_config(params['badge_placement_config_id'], 'edit')
-        @modules_json ||= CanvasAPI.api_call("/api/v1/courses/#{@course_id}/modules", @user_config, true)
+        @modules_json = []
+        @modules_json << CanvasAPI.api_call("/api/v1/courses/#{@course_id}/modules/#{session["context_module_id"].to_i}?include[]=items", @user_config, true)
         erb :_badge_modules, :layout => false
       end
       
@@ -168,11 +169,12 @@ module Sinatra
         org_check
         load_badge_config(params['badge_placement_config_id'], 'view')
         if @badge_placement_config && @badge_placement_config.configured?
-          if @badge && !@badge.needing_evaluation?
+          @earned_for_different_course = @badge && @badge.badge_placement_config_id != @badge_placement_config.id
+          if @badge && !@badge.needing_evaluation? && !@earned_for_different_course
             @student = {}
           else
             begin
-              args = @user_config.check_badge_status(@badge_placement_config, params, session['name'], session['email'])
+              args = @user_config.check_badge_status(@badge_placement_config, params, session['name'], session['email'],session['context_module_id'])
             rescue => e
               puts e.message
               puts e.backtrace
@@ -181,9 +183,12 @@ module Sinatra
             @student = args[:student]
             @completed_module_ids = args[:completed_module_ids]
             @badge = args[:badge]
+            @module_item_json = args[:module_item_json]
+            @student_score = args[:student_score]
+            @module_item_score = args[:module_item_score]
           end
           if @student
-            erb :_badge_status, :layout => false
+            erb :_badge_status,  :layout => false
           else
             return "<h3>You are not a student in this course, so you can't earn this badge</h3>"
           end

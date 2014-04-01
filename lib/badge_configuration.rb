@@ -41,6 +41,7 @@ module Sinatra
         placement_settings['credits_for_final_score'] = params['credits_for_final_score'].to_f.round(1)
         total_credits = placement_settings['credits_for_final_score']
         modules = []
+        module_items = []
         params.each do |k, v|
           if k.match(/module_/)
             id = k.sub(/module_/, '').to_i
@@ -50,9 +51,19 @@ module Sinatra
               modules << [id, CGI.unescape(v), credits]
             end
           end
+          #for storing module item as a hash .
+          if k.match(/item_for_/)
+            item_id = k.sub(/item_for_/, '').to_i
+            if item_id > 0
+              if params["item_for_#{item_id}"].to_i != 0
+                module_items << {params["item_for_#{item_id}"].to_i => params["score_for_#{item_id}"]}
+              end
+            end
+          end
         end
         placement_settings['modules'] = modules.length > 0 ? modules : nil
         placement_settings['total_credits'] = total_credits
+        placement_settings['module_items'] =  module_items.length > 0 ? module_items : nil
         
         @badge_placement_config.settings = placement_settings
         @badge_placement_config.updated_at = DateTime.now
@@ -162,14 +173,6 @@ module Sinatra
         @domain_id = @badge_placement_config.domain_id || domain_id
         @user_id = session['user_id']
         @badge_placement_config
-        @earned_for_different_course = @badge && @badge.badge_placement_config_id != @badge_placement_config.id
-        if @earned_for_different_course
-            user_badge_placement = UserBadgePlacement.first(badge_placement_config_id: @badge_placement_config.id,user_id:@badge.user_id,badge_id:@badge.id)
-            if user_badge_placement.nil?
-              user_badge_placement = UserBadgePlacement.new(badge_placement_config_id: @badge_placement_config.id,user_id:@badge.user_id,badge_id:@badge.id)
-              user_badge_placement.save
-            end
-        end
       end
     end
   end

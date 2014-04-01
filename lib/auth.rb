@@ -77,6 +77,7 @@ module Sinatra
           
           user_id = params['custom_canvas_user_id']
           user_config = UserConfig.first(:user_id => user_id, :domain_id => domain.id)
+          session["context_module_id"] = params['context_module_id'].to_i
           session["user_id"] = user_id
           session["user_image"] = params['user_image']
           session["launch_placement_id"] = params['resource_link_id']

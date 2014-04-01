@@ -2,7 +2,8 @@
 <% if @badge && @badge.awarded? %>
   <h3>You've earned this badge!</h3>
   <% if @badge.badge_placement_config_id != @badge_placement_config.id %>
-    You earned this badge somewhere else than this spot in this course.
+        <h3>You've earned this badge!</h3>
+    <!--You earned this badge somewhere else than this spot in this course.-->
   <% elsif !@badge.manual_approval %>
     <% if @badge_placement_config.credit_based? %>
       To earn this badge you needed <%= settings['required_credits'] %> credits, which you've now done.
@@ -16,7 +17,9 @@
           <%= @student['computed_final_score'].to_f %>% in this course right now and have 
         <% end %>
         completed the required modules.
-    <% else %>
+    <% elsif !(settings['module_items'] || []).empty? %>
+       You have earned this badge by completed the Assignment.
+    <% else  %>
       To earn this badge you needed a final score of <%= settings['min_percent'] %>%, and you have <%= @student['computed_final_score'].to_f %>% in this course right now.
     <% end %>
     <div class='progress progress-success progress-striped progress-big'><div class='bar' style='width: 100%;'></div></div>
@@ -93,6 +96,13 @@
     <% end %>
     </ul>
     <div class='progress progress-danger progress-striped progress-big'><div class='bar' style='width: <%= [(100.0 * achieved.to_f / total.to_f).to_i, 5].max.to_s  %>%;'></div></div>
+  <% elsif !(settings['module_items'] || []).empty? %>
+     <% if @module_item_score == 0  %>
+            To earn this badge you have to submit  the <%= @module_item_json['title'] %>  "<%= @module_item_json['type'] %>".
+        <% else  %>
+     To earn this badge you have to score atleast <%= @module_item_score %> in the <%= @module_item_json['title'] %>  "<%= @module_item_json['type'] %>", but you only have <%= @student_score %>  right now.
+        <% end %>
+        <br/>
   <% else %>
     To earn this badge you need <%= settings['min_percent'] %>%, but you only have <%= @student['computed_final_score'].to_f %>% in this course right now.
     <div class='progress progress-danger progress-striped progress-big'><div class='tick' style='left: <%= (3 * settings['min_percent']).to_i.to_s %>px;'></div><div class='bar' style='width: <%= @student['computed_final_score'].to_i.to_s %>%;'></div></div>
