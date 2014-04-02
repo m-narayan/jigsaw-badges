@@ -131,7 +131,7 @@ module Sinatra
         content_type :json
         @badges_hash ={}
         host = params['custom_canvas_api_domain']
-        if host && params['launch_presentation_return_url'].match(Regexp.new(host.sub(/\.instructure\.com/, ".(test|beta).instructure.com")))
+        if host && params['launch_presentation_return_url'].match(Regexp.new(host.sub(/\.jigsawacademy\.net/, ".(test|beta).jigsawacademy.net")))
           host = params['launch_presentation_return_url'].split(/\//)[2]
         end
         host ||= params['tool_consumer_instance_guid'].split(/\./)[1..-1].join(".") if params['tool_consumer_instance_guid'] && params['tool_consumer_instance_guid'].match(/\./)

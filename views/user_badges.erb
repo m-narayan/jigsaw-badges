@@ -13,12 +13,19 @@
 <table>
   <% @badges.each do |badge| %>
     <% badge_url = @for_current_user ? "/badges/check/#{badge.badge_placement_config_id}/#{badge.user_id}" : "/badges/criteria/#{badge.badge_config_id}/#{badge.config_nonce}?user=#{badge.nonce}" %>
-    <tr>
-    <td style='padding: 0 5px;'><a href='<%= badge_url %>'><img src='<%= badge.badge_url %>' class='thumbnail' alt='badge image'/></a></td>
+    <tr style="border-bottom: 1px solid lightgray;" >
+    <!--<td style='padding: 0 5px;'><a href='<%#= badge_url %>'><img src='<%#= badge.badge_url %>' class='thumbnail' alt='badge image'/></a></td>-->
+      <td style='padding: 18px 14px;'>
+        <img src='<%= badge.badge_url %>' class='' alt='badge image'/>
+        <div style="color: #fff;font-weight:bolder;text-align:center;margin-top: -25px;"><%= UserBadgePlacement.all(user_id: badge.user_id.to_i,badge_id: badge.id).size %></div>
+      </td>
     <td style='padding: 0 5px;'><%= badge.name %>
+      <br/>
+      <div style="font-size: 12px;margin-left: 14px;"><%= badge.description %></div>
+
       <% if @for_current_user %>
         <form class='form-inline' action='/badges/<% badge.nonce %>' style='margin: 0 0 0 15px;'>
-        <label><input class='public_badge' <%= 'checked' if badge.public %> type='checkbox'/> show on my Canvas profile</label>
+        <label><input class='public_badge' <%= 'checked' if badge.public %> type='checkbox'/> show on my Jigsaw LMS profile</label>
         </form>
       <% end %>
     </td>

@@ -151,7 +151,7 @@ class UserConfig
             #get module_item
             @module_item_json = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id.to_i}/modules/#{context_module_id}/items/#{@module_item_id}", self)
             #for getting the assignment id
-            if @module_item_json['type'] == 'Quiz'
+            if @module_item_json && @module_item_json['type'] == 'Quiz'
                 course_assignments = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id.to_i}/assignments", self)
                 course_assignments.each do |assignment|
                   quiz_id = assignment['quiz_id']
@@ -170,7 +170,7 @@ class UserConfig
                     end
                   end
                 end
-            elsif @module_item_json['type'] == 'Assignment'
+            elsif @module_item_json && @module_item_json['type'] == 'Assignment'
               submission = CanvasAPI.api_call("/api/v1/courses/#{badge_placement_config.course_id.to_i}/assignments/#{@module_item_json['content_id']}/submissions/#{params['user_id']}", self)
               @student_score = (submission['score'])
               unless @student_score.nil?
